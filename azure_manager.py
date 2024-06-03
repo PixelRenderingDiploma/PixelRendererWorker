@@ -1,13 +1,13 @@
-import base64
+import os
 import json
 import requests
 from dataclasses import dataclass, field
 from azure.storage.queue import QueueClient
 from structs import RenderingRequest, RenderingSettings
 
-CONNERCTION_STRING = "DefaultEndpointsProtocol=https;AccountName=pixelrenderingstorage;AccountKey=Unp8Muly8GPMmN24Oc61wbCwBCv+EpObRuhUf9mAUiPHCYnm9+ws12HVnTmlkTRo5WQPDYqNZ6MT+AStLFlKzQ==;EndpointSuffix=core.windows.net"
-ACCESS_STORAGE_ENDPOINT_URL_FOR_ACCOUNT = 'https://pixelrenderer-azurefunctions.azurewebsites.net'
-QUEUE_NAME = "renderingqueuedebug"
+CONNERCTION_STRING = os.getenv('CONNERCTION_STRING')
+ACCESS_STORAGE_ENDPOINT_URL_FOR_ACCOUNT = os.getenv('ACCESS_STORAGE_ENDPOINT_URL_FOR_ACCOUNT')
+QUEUE_NAME = os.getenv('QUEUE_NAME')
 
 @dataclass
 class AzureManager:

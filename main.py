@@ -6,6 +6,8 @@ import json
 import os
 import shutil
 
+from dotenv import load_dotenv
+
 from structs import *
 from azure_manager import AzureManager
 from dataclasses import asdict
