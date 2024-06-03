@@ -2,7 +2,8 @@ import base64
 import json
 import requests
 from dataclasses import dataclass, field
-from azure.storage.queue import QueueServiceClient, QueueClient, QueueMessage
+from azure.storage.queue import QueueClient
+from structs import RenderingRequest, RenderingSettings
 
 CONNERCTION_STRING = "DefaultEndpointsProtocol=https;AccountName=pixelrenderingstorage;AccountKey=Unp8Muly8GPMmN24Oc61wbCwBCv+EpObRuhUf9mAUiPHCYnm9+ws12HVnTmlkTRo5WQPDYqNZ6MT+AStLFlKzQ==;EndpointSuffix=core.windows.net"
 ACCESS_STORAGE_ENDPOINT_URL_FOR_ACCOUNT = 'https://pixelrenderer-azurefunctions.azurewebsites.net'
@@ -72,12 +73,15 @@ class AzureManager:
         else:
             return False
     
-    def get_next_config(self):
+    def get_next_request(self) -> RenderingRequest:
         message = self.queue_client.receive_message(visibility_timeout=3)
 
         if message:
-            configs = json.loads(message.content)
+            request_dict = json.loads(message.content)
+            settings_dict = request_dict.pop('settings')
+            settings = RenderingSettings(**settings_dict)
+            request = RenderingRequest(settings=settings, **request_dict)
 
             self.queue_client.delete_message(message)
 
-            return configs
+            return request
